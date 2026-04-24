@@ -77,6 +77,10 @@ const toLocalFilePath = (imagePath: string) => {
 };
 
 const toDataUrl = async (imagePath: string) => {
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+    return imagePath;
+  }
+
   const filePath = toLocalFilePath(imagePath);
   const ext = path.extname(filePath).toLowerCase();
   const mimeType = mimeTypes[ext] ?? "image/jpeg";

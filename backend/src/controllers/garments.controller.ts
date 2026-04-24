@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { prisma } from "../prisma.js";
 import { classifyInBackground } from "../services/classifier.service.js";
+import { uploadToS3 } from "../services/cloud-storage.service.js";
 
 const toOptionalString = (value: unknown) => {
   if (typeof value !== "string") return null;
@@ -38,7 +39,14 @@ export const uploadGarment = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Image file is required" });
   }
 
-  const imagePath = `/uploads/${file.filename}`;
+  let imagePath: string;
+
+  try {
+    imagePath = await uploadToS3(file);
+  } catch (error) {
+    console.error("S3 upload failed:", error);
+    return res.status(500).json({ message: "Failed to upload image to S3" });
+  }
 
   // Create garment with processing status
   const garment = await prisma.garment.create({
