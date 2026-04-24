@@ -1,0 +1,55 @@
+import type { Request, Response } from "express";
+import { prisma } from "../prisma.js";
+import { classifyGarment } from "../services/classifier.service.js";
+
+const toOptionalString = (value: unknown) => {
+  if (typeof value !== "string") return null;
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
+export const listGarments = async (_req: Request, res: Response) => {
+  try {
+    const garments = await prisma.garment.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return res.status(200).json({
+      result: garments,
+      message: "Garments retrieved successfully",
+      error: false,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      result: null,
+      message: "Something went wrong",
+      error: true,
+    });
+  }
+};
+
+export const uploadGarment = async (req: Request, res: Response) => {
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).json({ message: "Image file is required" });
+  }
+
+  // Classify the garment image
+  const classification = await classifyGarment(`/uploads/${file.filename}`);
+
+  const garment = await prisma.garment.create({
+    data: {
+      imagePath: `/uploads/${file.filename}`,
+      type: classification.type,
+      damage: classification.damage,
+      material: classification.material,
+      complexity: classification.complexity,
+    },
+  });
+
+  return res.status(201).json(garment);
+};

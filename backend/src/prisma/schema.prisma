@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+enum GarmentStatus {
+  processing
+  classified
+}
+
+model Garment {
+  id         Int           @id @default(autoincrement())
+
+  imagePath  String
+  status     GarmentStatus @default(processing)
+  type       String? //can be choosed from a list of types
+  damage     String? //can be choosed from a list of damages
+  material   String? //can be choosed from a list of materials
+  complexity String? //can be choosed from a list of complexities
+
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
