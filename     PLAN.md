@@ -39,7 +39,6 @@ only if I finish early
 - mobile apps
 - websockets (polling is fine for MVP)
 - blockchain
-- testing 
 
 ---
 

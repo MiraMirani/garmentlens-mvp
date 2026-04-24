@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { prisma } from "../prisma.js";
-import { classifyGarment } from "../services/classifier.service.js";
+import { classifyInBackground } from "../services/classifier.service.js";
 
 const toOptionalString = (value: unknown) => {
   if (typeof value !== "string") return null;
@@ -38,18 +38,27 @@ export const uploadGarment = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Image file is required" });
   }
 
-  // Classify the garment image
-  const classification = await classifyGarment(`/uploads/${file.filename}`);
+  const imagePath = `/uploads/${file.filename}`;
 
+  // Create garment with processing status
   const garment = await prisma.garment.create({
     data: {
-      imagePath: `/uploads/${file.filename}`,
-      type: classification.type,
-      damage: classification.damage,
-      material: classification.material,
-      complexity: classification.complexity,
+      imagePath,
+      status: "processing",
+      type: null,
+      damage: null,
+      material: null,
+      complexity: null,
     },
   });
+
+  void classifyInBackground(garment.id, imagePath)
+      .then(() => {
+
+      })
+      .catch((error) => {
+      //   handle catch if needed, e.g. log error
+      });
 
   return res.status(201).json(garment);
 };
