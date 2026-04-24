@@ -1,8 +1,14 @@
-import "dotenv/config";
+import path from "node:path";
+import { config as loadEnv } from "dotenv";
 import express from "express";
 import cors from "cors";
 import garmentsRouter from "./routes/garments.routes.js";
 
+loadEnv();
+loadEnv({
+    path: path.resolve(process.cwd(), "src/.env"),
+    override: false,
+});
 
 
 export const createApp = () => {

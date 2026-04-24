@@ -15,27 +15,27 @@ services:
       timeout: 5s
       retries: 5
 
-#  backend:
-#    build: ./backend
-#    environment:
-#      DATABASE_URL: postgresql://postgres:postgres@db:5432/garmentlens
-#      PORT: 3000
-#    ports:
-#      - "3000:3000"
-#    depends_on:
-#      db:
-#        condition: service_healthy
-#    volumes:
-#      - backend_uploads:/app/uploads
-#    command: sh -c "npx prisma migrate deploy && npm start"
-#
-#  frontend:
-#    build: ./frontend
-#    ports:
-#      - "5173:5173"
-#    environment:
-#      VITE_API_BASE_URL: http://localhost:3000
-#
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/garmentlens
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - backend_uploads:/app/uploads
+    command: sh -c "npx prisma migrate deploy && npm start"
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL: http://localhost:3000
+
 volumes:
   postgres_data:
-#  backend_uploads:
+  backend_uploads:

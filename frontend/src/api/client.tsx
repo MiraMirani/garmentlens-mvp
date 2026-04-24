@@ -14,6 +14,7 @@ export interface Garment {
   damage: string | null;
   material: string | null;
   complexity: string | null;
+  classifier: string | null;
   createdAt: string;
   updatedAt: string;
 }

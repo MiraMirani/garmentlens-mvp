@@ -1,14 +1,32 @@
-import {NavLink} from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 function Navbar() {
+  const links = [
+    { to: "/", label: "Home" },
+    { to: "/upload", label: "Upload" },
+    { to: "/list", label: "List" },
+  ];
 
-    return (
-        <nav>
-            <NavLink to="/" className={({ isActive }) => (isActive ? "active" : "")}>Home</NavLink>
-            <NavLink to="/upload" className={({ isActive }) => (isActive ? "active" : "")}>Upload</NavLink>
-            <NavLink to="/list" className={({ isActive }) => (isActive ? "active" : "")}>List</NavLink>
-        </nav>
-    )
+  return (
+    <header className="topbar">
+      <Link to="/" className="brand">
+        GarmentLens
+      </Link>
+      <nav className="nav-tabs" aria-label="Main navigation">
+        {links.map(({ to, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
+            {label}
+          </NavLink>
+        ))}
+      </nav>
+    </header>
+  );
 }
 
 export default Navbar;

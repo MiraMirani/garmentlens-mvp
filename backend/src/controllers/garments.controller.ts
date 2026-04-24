@@ -49,6 +49,7 @@ export const uploadGarment = async (req: Request, res: Response) => {
       damage: null,
       material: null,
       complexity: null,
+      classifier: null,
     },
   });
 
